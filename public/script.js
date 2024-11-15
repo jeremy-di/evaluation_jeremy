@@ -22,6 +22,33 @@ const createLessonsCards = (lessons) => {
     })
     lessonsContainer.innerHTML = ''
     lessonsContainer.append(...lessonsList)
+
+    const deleteButtons = lessonsContainer.querySelectorAll('.bouton-rouge');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+            const lessonId = event.target.dataset.id;
+
+            // Confirmation de suppression
+            const confirmDelete = confirm('Êtes-vous sûr de vouloir supprimer cette leçon ?');
+            if (!confirmDelete) return;
+
+            try {
+                const response = await fetch(`http://localhost:8000/api/v1/lesson/${lessonId}`, {
+                    method: 'DELETE',
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la suppression de la leçon');
+                }
+
+                alert('Leçon supprimée avec succès');
+                fetchLessons();
+            } catch (error) {
+                console.error('Error deleting lesson:', error);
+                alert('Une erreur est survenue lors de la suppression de la leçon');
+            }
+        });
+    });
 }
 
 const form = document.querySelector('form');
@@ -75,16 +102,4 @@ const displayErrors = (errors) => {
 
     errorsContainer.innerHTML = errors.map((err) => `<p>${err}</p>`).join('');
 };
-
-const deleteBtn = lessonsContainer.querySelector('.bouton-rouge')
-deleteBtn.addEventListener('click', async event => {
-    const idLesson = event.target.dataset.id
-
-    await fetch(`http://localhost:8000/api/v1/lesson/delete/${idLesson}`, {
-        method: 'DELETE'
-    })
-    
-    fetchLessons()
-})
-
 
