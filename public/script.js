@@ -16,7 +16,7 @@ const createLessonsCards = (lessons) => {
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">${lesson.title}</h5>
             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Nombre de chapitres : <span>${lesson.chaptersNumber}</span></p>
             <button type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Voir</button>
-            <button type="button" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Supprimer</button>
+            <button type="button" class="bouton-rouge focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" data-id=${lesson._id}>Supprimer</button>
         `
         return lessonCard
     })
@@ -27,12 +27,11 @@ const createLessonsCards = (lessons) => {
 const form = document.querySelector('form');
 const errorsContainer = document.querySelector('.errors');
 
-// Gestion de la soumission du formulaire
 form.addEventListener('submit', async (event) => {
-    event.preventDefault(); // Empêche le rechargement de la page
+    event.preventDefault();
 
     const formData = new FormData(form);
-    const lesson = Object.fromEntries(formData.entries()); // Convertit en objet
+    const lesson = Object.fromEntries(formData.entries());
 
     if (!isValidForm(lesson)) {
         return;
@@ -71,10 +70,21 @@ const isValidForm = (lesson) => {
     return true;
 };
 
-// Affichage des erreurs
 const displayErrors = (errors) => {
     if (!errorsContainer) return;
 
     errorsContainer.innerHTML = errors.map((err) => `<p>${err}</p>`).join('');
 };
+
+const deleteBtn = lessonsContainer.querySelector('.bouton-rouge')
+deleteBtn.addEventListener('click', async event => {
+    const idLesson = event.target.dataset.id
+
+    await fetch(`http://localhost:8000/api/v1/lesson/delete/${idLesson}`, {
+        method: 'DELETE'
+    })
+    
+    fetchLessons()
+})
+
 
