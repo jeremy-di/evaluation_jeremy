@@ -44,7 +44,6 @@ const createLessonsCards = (lessons) => {
                 alert('Leçon supprimée avec succès');
                 fetchLessons();
             } catch (error) {
-                console.error('Error deleting lesson:', error);
                 alert('Une erreur est survenue lors de la suppression de la leçon');
             }
         });
